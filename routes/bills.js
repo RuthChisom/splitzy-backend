@@ -1,14 +1,15 @@
+// bill-related routes
 const express = require("express");
 const router = express.Router();
-const splitzyContract = require("../config");
+const splitzyContract = require("../config/contract");
 
 // GET /bills/:userAddress
 router.get("/:userAddress", async (req, res) => {
   try {
-    const bills = await splitzyContract.getMyBills({ from: req.params.userAddress });
+    const bills = await splitzyContract.getMyBills(req.params.userAddress);
     res.json({ userBills: bills });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Error fetching user's bills" });
   }
 });
 
@@ -16,11 +17,10 @@ router.get("/:userAddress", async (req, res) => {
 router.get("/:billId/amount/:userAddress", async (req, res) => {
   const { billId, userAddress } = req.params;
   try {
-    const result = await splitzyContract.checkMyAmount(billId, { from: userAddress });
-    const [amount, hasPaid] = result;
+    const [amount, hasPaid] = await splitzyContract.checkMyAmount(billId, userAddress );;
     res.json({ amount: amount.toString(), hasPaid });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Error checking user amount"});
   }
 });
 
