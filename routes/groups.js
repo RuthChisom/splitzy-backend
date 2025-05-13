@@ -11,12 +11,12 @@ router.get("/", async (req, res) => {
         return res.status(400).json({ error: "User address is required" });
       }
   
-      const count = await contract.groupCount();
+      const count = await splitzyContract.groupCount();
       const userGroups = [];
   
       for (let i = 0; i < count; i++) {
-        const group = await contract.groups(i);
-        const groupDetails = await contract.getGroup(group.id);
+        const group = await splitzyContract.groups(i);
+        const groupDetails = await splitzyContract.getGroup(group.id);
   
         const isMember = groupDetails.members.some(
           (member) => member.toLowerCase() === address
@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
 router.get("/:groupId", async (req, res) => {
     try {
       const groupId = req.params.groupId;
-      const group = await contract.getGroup(groupId);
+      const group = await splitzyContract.getGroup(groupId);
       res.json({
         id: groupId,
         name: group.name,
